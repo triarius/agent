@@ -65,6 +65,12 @@ steps:
       - test-race-linux
         # - test-linux-arm64
     plugins:
+      - kubernetes:
+          podSpec:
+            nodeSelector:
+              role: workers
+            containers:
+              - image: debian:buster-slim
       - junit-annotate#v1.6.0:
           artifacts: junit-*.xml
 
