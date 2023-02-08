@@ -13,7 +13,8 @@ steps:
               role: workers
             containers:
               - image: golang:1.20
-                command: .buildkite/steps/test-go-fmt.sh
+                command:
+                  - .buildkite/steps/test-go-fmt.sh
 
   - name: ":linux: Linux AMD64 Tests"
     key: test-linux-amd64
@@ -25,7 +26,8 @@ steps:
               role: workers
             containers:
               - image: golang:1.20
-                command: .buildkite/steps/tests.sh
+                command:
+                  - .buildkite/steps/tests.sh
       - test-collector#v1.2.0:
           files: "junit-*.xml"
           format: "junit"
@@ -43,7 +45,8 @@ steps:
               role: workers-arm64
             containers:
               - image: golang:1.20
-                command: .buildkite/steps/tests.sh
+                command:
+                  - .buildkite/steps/tests.sh
       - test-collector#v1.2.0:
           files: "junit-*.xml"
           format: "junit"
@@ -58,7 +61,8 @@ steps:
               role: workers
             containers:
               - image: golang:1.20
-                command: .buildkite/steps/tests.sh -race
+                command:
+                  - .buildkite/steps/tests.sh -race
       - test-collector#v1.2.0:
           files: "junit-*.xml"
           format: "junit"
