@@ -29,21 +29,23 @@ steps:
                 command:
                   - .buildkite/steps/tests.sh
 
-                    #  - name: ":linux: Linux ARM64 Tests"
-                    #    key: test-linux-arm64
-                    #    command: ".buildkite/steps/tests.sh"
-                    #    artifact_paths: junit-*.xml
-                    #    agents:
-                    #      queue: agent-runners-linux-arm64
-                    #    plugins:
-                    #      - kubernetes:
-                    #          podSpec:
-                    #            nodeSelector:
-                    #              role: workers-arm64
-                    #            containers:
-                    #              - image: golang:1.20
-                    #                command:
-                    #                  - .buildkite/steps/tests.sh
+# Does not work because there are no arm64 images for agent-k8s
+#
+#  - name: ":linux: Linux ARM64 Tests"
+#    key: test-linux-arm64
+#    command: ".buildkite/steps/tests.sh"
+#    artifact_paths: junit-*.xml
+#    agents:
+#      queue: agent-runners-linux-arm64
+#    plugins:
+#      - kubernetes:
+#          podSpec:
+#            nodeSelector:
+#              role: workers-arm64
+#            containers:
+#              - image: golang:1.20
+#                command:
+#                  - .buildkite/steps/tests.sh
 
   - name: ":satellite: Detect Data Races"
     key: test-race-linux
@@ -58,21 +60,22 @@ steps:
                 command:
                   - .buildkite/steps/tests.sh -race
 
-
-  - label: ":writing_hand: Annotate with Test Failures"
-    depends_on:
-      - test-linux-amd64
-      - test-race-linux
-        # - test-linux-arm64
-    plugins:
-      - kubernetes:
-          podSpec:
-            nodeSelector:
-              role: workers
-            containers:
-              - image: buildkite/agent:3.43.1
-      - junit-annotate#v1.6.0:
-          artifacts: junit-*.xml
+# Does not work becuase the plugin uses docker-compose
+#
+#   - label: ":writing_hand: Annotate with Test Failures"
+#     depends_on:
+#       - test-linux-amd64
+#       - test-race-linux
+#         # - test-linux-arm64
+#     plugins:
+#       - kubernetes:
+#           podSpec:
+#             nodeSelector:
+#               role: workers
+#             containers:
+#               - image: buildkite/agent:3.43.1
+#       - junit-annotate#v1.6.0:
+#           artifacts: junit-*.xml
 
   - group: ":hammer_and_wrench: Binary builds"
     steps:
