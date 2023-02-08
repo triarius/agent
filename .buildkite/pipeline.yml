@@ -9,6 +9,8 @@ steps:
     plugins:
       - kubernetes:
           podSpec:
+            nodeSelector:
+              role: workers
             containers:
               - image: golang:1.20
                 command: .buildkite/steps/test-go-fmt.sh
@@ -38,7 +40,7 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              role: workers
+              role: workers-arm64
             containers:
               - image: golang:1.20
                 command: .buildkite/steps/tests.sh
@@ -52,6 +54,8 @@ steps:
     plugins:
       - kubernetes:
           podSpec:
+            nodeSelector:
+              role: workers
             containers:
               - image: golang:1.20
                 command: .buildkite/steps/tests.sh -race
