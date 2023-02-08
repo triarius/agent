@@ -70,7 +70,7 @@ steps:
             nodeSelector:
               role: workers
             containers:
-              - image: debian:buster-slim
+              - image: nixery.dev/shell/git
       - junit-annotate#v1.6.0:
           artifacts: junit-*.xml
 
