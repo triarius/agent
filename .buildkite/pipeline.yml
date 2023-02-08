@@ -29,23 +29,19 @@ steps:
                 command:
                   - .buildkite/steps/tests.sh
 
-# Does not work because there are no arm64 images for agent-k8s
-#
-#  - name: ":linux: Linux ARM64 Tests"
-#    key: test-linux-arm64
-#    command: ".buildkite/steps/tests.sh"
-#    artifact_paths: junit-*.xml
-#    agents:
-#      queue: agent-runners-linux-arm64
-#    plugins:
-#      - kubernetes:
-#          podSpec:
-#            nodeSelector:
-#              role: workers-arm64
-#            containers:
-#              - image: golang:1.20
-#                command:
-#                  - .buildkite/steps/tests.sh
+  - name: ":linux: Linux ARM64 Tests"
+    key: test-linux-arm64
+    command: ".buildkite/steps/tests.sh"
+    artifact_paths: junit-*.xml
+    plugins:
+      - kubernetes:
+          podSpec:
+            nodeSelector:
+              role: workers-arm64
+            containers:
+              - image: golang:1.20
+                command:
+                  - .buildkite/steps/tests.sh
 
   - name: ":satellite: Detect Data Races"
     key: test-race-linux
