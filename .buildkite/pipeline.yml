@@ -1,28 +1,32 @@
 env:
   DRY_RUN: false # set to true to disable publishing releases
 agents:
-  queue: agent-runners-linux-amd64
+  queue: kubernetes
 
 steps:
   - name: ":go: go fmt"
     key: test-go-fmt
-    command: ".buildkite/steps/test-go-fmt.sh"
     plugins:
-      docker-compose#v3.0.0:
-        config: .buildkite/docker-compose.yml
-        run: agent
+      - kubernetes:
+          podSpec:
+            containers:
+              - image: golang:1.20
+                command: .buildkite/steps/test-go-fmt.sh
 
   - name: ":linux: Linux AMD64 Tests"
     key: test-linux-amd64
-    command: ".buildkite/steps/tests.sh"
     artifact_paths: junit-*.xml
     plugins:
-      docker-compose#v3.0.0:
-        config: .buildkite/docker-compose.yml
-        run: agent
-      test-collector#v1.2.0:
-        files: "junit-*.xml"
-        format: "junit"
+      - kubernetes:
+          podSpec:
+            nodeSelector:
+              role: workers
+            containers:
+              - image: golang:1.20
+                command: .buildkite/steps/tests.sh
+      - test-collector#v1.2.0:
+          files: "junit-*.xml"
+          format: "junit"
 
   - name: ":linux: Linux ARM64 Tests"
     key: test-linux-arm64
@@ -31,202 +35,26 @@ steps:
     agents:
       queue: agent-runners-linux-arm64
     plugins:
-      docker-compose#v3.0.0:
-        config: .buildkite/docker-compose.yml
-        run: agent
-      test-collector#v1.2.0:
-        files: "junit-*.xml"
-        format: "junit"
+      - kubernetes:
+          podSpec:
+            nodeSelector:
+              role: workers
+            containers:
+              - image: golang:1.20
+                command: .buildkite/steps/tests.sh
+      - test-collector#v1.2.0:
+          files: "junit-*.xml"
+          format: "junit"
 
   - name: ":satellite: Detect Data Races"
-    key: test-race-linux-arm64
-    command: ".buildkite/steps/tests.sh -race"
+    key: test-race-linux
     artifact_paths: junit-*.xml
-    agents:
-      queue: agent-runners-linux-arm64
     plugins:
-      docker-compose#v3.0.0:
-        config: .buildkite/docker-compose.yml
-        run: agent
-      test-collector#v1.2.0:
-        files: "junit-*.xml"
-        format: "junit"
-
-  - name: ":windows: Windows AMD64 Tests"
-    key: test-windows
-    command: "bash .buildkite\\steps\\tests.sh"
-    artifact_paths: junit-*.xml
-    agents:
-      queue: agent-runners-windows-amd64
-    plugins:
-      test-collector#v1.2.0:
-        files: "junit-*.xml"
-        format: "junit"
-
-  - label: ":writing_hand: Annotate with Test Failures"
-    depends_on:
-      - test-linux-amd64
-      - test-race-linux-arm64
-      - test-linux-arm64
-      - test-windows
-    plugins:
-      - junit-annotate#v1.6.0:
-          artifacts: junit-*.xml
-
-  - group: ":hammer_and_wrench: Binary builds"
-    steps:
-    - name: ":{{matrix.os}}: Build {{matrix.os}} {{matrix.arch}} binary"
-      command: ".buildkite/steps/build-binary.sh {{matrix.os}} {{matrix.arch}}"
-      key: build-binary
-      depends_on:
-        # don't wait for slower windows tests
-        - test-linux-amd64
-        - test-linux-arm64
-      artifact_paths: "pkg/*"
-      plugins:
-        docker-compose#v3.0.0:
-          config: .buildkite/docker-compose.yml
-          run: agent
-      matrix:
-        setup:
-          os:
-            - darwin
-            - freebsd
-            - linux
-            - openbsd
-            - windows
-          arch:
-            - "386"
-            - amd64
-            - arm64
-        adjustments:
-          - with: { os: darwin, arch: "386" }
-            skip: "macOS no longer supports x86 binaries"
-
-          - with: { os: dragonflybsd, arch: amd64 }
-
-          - with: { os: freebsd, arch: arm64 }
-            skip: "arm64 FreeBSD is not currently supported"
-
-          - with: { os: linux, arch: arm }
-          - with: { os: linux, arch: armhf }
-          - with: { os: linux, arch: ppc64 }
-          - with: { os: linux, arch: ppc64le }
-          - with: { os: linux, arch: mips64le }
-          - with: { os: linux, arch: s390x }
-
-          - with: { os: netbsd, arch: amd64 }
-
-          - with: { os: openbsd, arch: arm64 }
-            skip: "arm64 OpenBSD is not currently supported"
-
-  - name: ":technologist: Test bk cli + Agent cli"
-    key: test-bk-cli
-    depends_on: build-binary
-    command: ".buildkite/steps/test-bk.sh"
-    plugins:
-      docker-compose#v3.0.0:
-        config: .buildkite/docker-compose.yml
-        run: agent
-        env:
-          - BUILDKITE_AGENT_ACCESS_TOKEN
-          - BUILDKITE_BUILD_ID
-          - BUILDKITE_JOB_ID
-        volumes:
-          - "/usr/bin/buildkite-agent:/usr/bin/buildkite-agent"
-
-  - name: ":mag: Extract Agent Version Metadata"
-    key: set-metadata
-    command: ".buildkite/steps/extract-agent-version-metadata.sh"
-
-  - group: ":docker: Docker Image Builds"
-    steps:
-      - name: ":docker: {{matrix}} image build"
-        key: build-docker
-        agents:
-          queue: elastic-builders
-        depends_on:
-          - build-binary
-          - set-metadata
-        command: ".buildkite/steps/build-docker-image.sh {{matrix}}"
-        matrix:
-          setup:
-            - "alpine"
-            - "alpine-k8s"
-            - "ubuntu-18.04"
-            - "ubuntu-20.04"
-            - "sidecar"
-
-  - group: ":docker: Docker Image Tests"
-    steps:
-      - name: ":docker: {{matrix.variant}} amd64 image test"
-        key: test-docker-amd64
-        agents:
-          queue: elastic-builders
-        depends_on:
-          - build-docker
-        command: .buildkite/steps/test-docker-image.sh {{matrix.variant}}
-        matrix:
-          setup:
-            variant:
-              - alpine
-              - alpine-k8s
-              - ubuntu-18.04
-              - ubuntu-20.04
-              - sidecar
-
-      - name: ":docker: {{matrix.variant}} arm64 image test"
-        key: test-docker-arm64
-        agents:
-          queue: elastic-builders-arm64
-        depends_on:
-          - build-docker
-        command: .buildkite/steps/test-docker-image.sh {{matrix.variant}}
-        matrix:
-          setup:
-            variant:
-              - alpine
-              - alpine-k8s
-              - ubuntu-18.04
-              - ubuntu-20.04
-              - sidecar
-
-  - name: ":debian: Debian package build"
-    key: build-debian-packages
-    depends_on:
-      - build-binary
-      - set-metadata
-    command: ".buildkite/steps/build-debian-packages.sh"
-    artifact_paths: "deb/**/*"
-
-  - name: ":redhat: RPM Package build"
-    key: build-rpm-packages
-    depends_on:
-      - build-binary
-      - set-metadata
-    command: ".buildkite/steps/build-rpm-packages.sh"
-    artifact_paths: "rpm/**/*"
-
-  - name: ":github: Build Github Release"
-    key: build-github-release
-    depends_on:
-      - build-binary
-      - set-metadata
-    command: ".buildkite/steps/build-github-release.sh"
-    artifact_paths: "releases/**/*"
-    plugins:
-      docker-compose#v1.8.0:
-        config: .buildkite/docker-compose.release.yml
-        run: github-release
-
-  - name: ":pipeline: Upload Release Pipeline"
-    key: upload-release-steps
-    depends_on:
-      - test-windows
-      - test-bk-cli
-      - build-rpm-packages
-      - build-debian-packages
-      - build-github-release
-      - test-docker-amd64
-      - test-docker-arm64
-    command: ".buildkite/steps/upload-release-steps.sh"
+      - kubernetes:
+          podSpec:
+            containers:
+              - image: golang:1.20
+                command: .buildkite/steps/tests.sh -race
+      - test-collector#v1.2.0:
+          files: "junit-*.xml"
+          format: "junit"
