@@ -28,9 +28,6 @@ steps:
               - image: golang:1.20
                 command:
                   - .buildkite/steps/tests.sh
-      - test-collector#v1.2.0:
-          files: "junit-*.xml"
-          format: "junit"
 
   - name: ":linux: Linux ARM64 Tests"
     key: test-linux-arm64
@@ -47,9 +44,6 @@ steps:
               - image: golang:1.20
                 command:
                   - .buildkite/steps/tests.sh
-      - test-collector#v1.2.0:
-          files: "junit-*.xml"
-          format: "junit"
 
   - name: ":satellite: Detect Data Races"
     key: test-race-linux
@@ -63,6 +57,3 @@ steps:
               - image: golang:1.20
                 command:
                   - .buildkite/steps/tests.sh -race
-      - test-collector#v1.2.0:
-          files: "junit-*.xml"
-          format: "junit"
