@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "$@"
+
 if [[ ${#} -lt 3 ]]
 then
   echo "Usage: ${0} [platform] [arch] [buildVersion]" >&2
