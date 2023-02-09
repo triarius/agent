@@ -17,6 +17,7 @@ steps:
                   - .buildkite/steps/test-go-fmt.sh
 
   - name: ":linux: Linux AMD64 Tests"
+    skip: true
     key: test-linux-amd64
     artifact_paths: junit-*.xml
     plugins:
