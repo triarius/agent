@@ -85,6 +85,9 @@ steps:
         # don't wait for slower windows tests
         - test-linux-amd64
         # - test-linux-arm64
+      env:
+        GOOS: "{{matrix.os}}"
+        GOARCH: "{{matrix.arch}}"
       artifact_paths: "pkg/*"
       plugins:
         - kubernetes:
@@ -94,7 +97,39 @@ steps:
               containers:
                 - image: golang:1.20
                   command:
-                    - .buildkite/steps/build-binary.sh linux amd64
+                    - .buildkite/steps/build-binary.sh /$GOOS /$GOARCH
+      matrix:
+        setup:
+          os:
+            - darwin
+            - freebsd
+            - linux
+            - openbsd
+            - windows
+          arch:
+            - "386"
+            - amd64
+            - arm64
+        adjustments:
+          - with: { os: darwin, arch: "386" }
+            skip: "macOS no longer supports x86 binaries"
+
+          - with: { os: dragonflybsd, arch: amd64 }
+
+          - with: { os: freebsd, arch: arm64 }
+            skip: "arm64 FreeBSD is not currently supported"
+
+          - with: { os: linux, arch: arm }
+          - with: { os: linux, arch: armhf }
+          - with: { os: linux, arch: ppc64 }
+          - with: { os: linux, arch: ppc64le }
+          - with: { os: linux, arch: mips64le }
+          - with: { os: linux, arch: s390x }
+
+          - with: { os: netbsd, arch: amd64 }
+
+          - with: { os: openbsd, arch: arm64 }
+            skip: "arm64 OpenBSD is not currently supported"
 
   - name: ":mag: Extract Agent Version Metadata"
     key: set-metadata
