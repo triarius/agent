@@ -84,7 +84,7 @@ steps:
       depends_on:
         # don't wait for slower windows tests
         - test-linux-amd64
-        - test-linux-arm64
+        # - test-linux-arm64
       artifact_paths: "pkg/*"
       plugins:
         - kubernetes:
