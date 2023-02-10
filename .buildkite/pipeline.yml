@@ -154,3 +154,40 @@ steps:
               - image: golang:1.20
                 command:
                   -  .buildkite/steps/extract-agent-version-metadata.sh
+
+  - group: ":docker: Docker Image Builds"
+    steps:
+      - name: ":docker: {{matrix}} image build"
+        key: build-docker
+        agents:
+          queue: elastic-builders
+        depends_on:
+          - build-binary
+          - set-metadata
+        env:
+          IMAGE_VARIANT: "{{matrix}}"
+        command: ".buildkite/steps/build-docker-image.sh {{matrix}}"
+        plugins:
+          - kubernetes:
+              podSpec:
+                nodeSelector:
+                  beta.kubernetes.io/arch: amd64
+                containers:
+                  - name: builder
+                    image: golang:1.20
+                    command:
+                      - .buildkite/steps/build-docker-image.sh "/$IMAGE_VARIANT"
+                    volumeMounts:
+                      - name: buildkit-client
+                        mountPath: /buildkit/certs
+                volumes:
+                  - name: buildkit-client
+                    secret:
+                      secretName: buildkit-client-certs
+        matrix:
+          setup:
+            - "alpine"
+            - "alpine-k8s"
+            - "ubuntu-18.04"
+            - "ubuntu-20.04"
+            - "sidecar"

@@ -56,7 +56,13 @@ if [[ -z "$image_tag" ]] ; then
   echo "Docker Image Tag for $variant: $image_tag"
 fi
 
-builder_name=$(docker buildx create --use)
+builder_name=$(docker buildx create \
+  --name remote \
+  --driver remote \
+  --driver-opt cacert=/buildkit/certs/ca.pem,cert=/buildkit/certs/cert.pem,key=/buildkit/certs/key.pem \
+  tcp://buildkitd.buildkite.svc:1234 \
+  --use \
+)
 # shellcheck disable=SC2064 # we want the current $builder_name to be trapped, not the runtime one
 trap "docker buildx rm $builder_name || true" EXIT
 
