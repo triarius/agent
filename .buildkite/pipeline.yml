@@ -82,7 +82,7 @@ steps:
 #       - kubernetes:
 #           podSpec:
 #             nodeSelector:
-                beta.kubernetes.io/arch: amd64
+#                beta.kubernetes.io/arch: amd64
 #             containers:
 #               - image: buildkite/agent:3.43.1
 #       - junit-annotate#v1.6.0:
