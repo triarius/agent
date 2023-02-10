@@ -28,7 +28,6 @@ steps:
                   - .buildkite/steps/test-go-fmt.sh
 
   - name: ":linux: Linux AMD64 Tests"
-    skip: true
     key: test-linux-amd64
     artifact_paths: junit-*.xml
     plugins:
@@ -74,7 +73,7 @@ steps:
 #     depends_on:
 #       - test-linux-amd64
 #       - test-race-linux
-#         # - test-linux-arm64
+#       - test-linux-arm64
 #     plugins:
 #       - kubernetes:
 #           podSpec:
@@ -92,7 +91,7 @@ steps:
       depends_on:
         # don't wait for slower windows tests
         - test-linux-amd64
-        # - test-linux-arm64
+        - test-linux-arm64
       env:
         GOOS: "{{matrix.os}}"
         GOARCH: "{{matrix.arch}}"
@@ -120,12 +119,12 @@ steps:
             - arm64
         adjustments:
           - with: { os: darwin, arch: "386" }
-            skip: "macOS no longer supports x86 binaries"
+            skip: macOS no longer supports x86 binaries
 
           - with: { os: dragonflybsd, arch: amd64 }
 
           - with: { os: freebsd, arch: arm64 }
-            skip: "arm64 FreeBSD is not currently supported"
+            skip: arm64 FreeBSD is not currently supported
 
           - with: { os: linux, arch: arm }
           - with: { os: linux, arch: armhf }
@@ -137,7 +136,7 @@ steps:
           - with: { os: netbsd, arch: amd64 }
 
           - with: { os: openbsd, arch: arm64 }
-            skip: "arm64 OpenBSD is not currently supported"
+            skip: arm64 OpenBSD is not currently supported
 
   - name: ":mag: Extract Agent Version Metadata"
     key: set-metadata
