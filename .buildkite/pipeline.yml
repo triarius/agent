@@ -166,7 +166,6 @@ steps:
           - set-metadata
         env:
           IMAGE_VARIANT: "{{matrix}}"
-        command: ".buildkite/steps/build-docker-image.sh {{matrix}}"
         plugins:
           - kubernetes:
               podSpec:
