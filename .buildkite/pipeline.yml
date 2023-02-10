@@ -48,9 +48,9 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              kubernetes.io/arch: amd64
+              kubernetes.io/arch: arm64
             containers:
-              - image: golang:1.20
+              - image: golang:1.20-alpine
                 command:
                   - .buildkite/steps/tests.sh
 
