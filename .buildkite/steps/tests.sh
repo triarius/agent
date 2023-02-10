@@ -1,6 +1,6 @@
-#!/usr/bin/env ash
+#!/usr/bin/env sh
 
-set -eufo pipefail
+set -euf
 
 go version
 echo arch is "$(uname -m)"

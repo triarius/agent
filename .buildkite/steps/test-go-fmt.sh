@@ -1,6 +1,8 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-if [[ $(gofmt -l ./ | head -c 1 | wc -c) != 0 ]]; then
+set -euf
+
+if [ "$(gofmt -l ./ | head -c 1 | wc -c)" != 0 ]; then
   echo "The following files haven't been formatted with \`go fmt\`:"
   gofmt -l ./
   echo
