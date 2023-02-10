@@ -9,7 +9,7 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              role: workers
+              beta.kubernetes.io/arch: amd64
             containers:
               - image: alpine:latest
                 command:
@@ -20,7 +20,7 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              role: workers
+              beta.kubernetes.io/arch: amd64
             containers:
               - image: golang:1.20
                 command:
@@ -34,7 +34,7 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              role: workers
+              beta.kubernetes.io/arch: amd64
             containers:
               - image: golang:1.20
                 command:
@@ -65,7 +65,7 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              role: workers
+              beta.kubernetes.io/arch: amd64
             containers:
               - image: golang:1.20
                 command:
@@ -82,7 +82,7 @@ steps:
 #       - kubernetes:
 #           podSpec:
 #             nodeSelector:
-#               role: workers
+                beta.kubernetes.io/arch: amd64
 #             containers:
 #               - image: buildkite/agent:3.43.1
 #       - junit-annotate#v1.6.0:
@@ -104,7 +104,7 @@ steps:
         - kubernetes:
             podSpec:
               nodeSelector:
-                role: workers
+                beta.kubernetes.io/arch: amd64
               containers:
                 - image: golang:1.20
                   command:
@@ -155,7 +155,7 @@ steps:
       - kubernetes:
           podSpec:
             nodeSelector:
-              role: workers
+              beta.kubernetes.io/arch: amd64
             containers:
               - image: golang:1.20
                 command:
