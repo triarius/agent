@@ -109,13 +109,6 @@ steps:
                 - image: golang:1.20
                   command:
                     - .buildkite/steps/build-binary.sh "$GOOS" "$GOARCH"
-                  env:
-                    - name: GOOS
-                      value: $GOOS
-                    - name: GOARCH
-                      value: $GOARCH
-                    - name: BUILDKITE_BUILD_NUMBER
-                      value: $BUILDKITE_BUILD_NUMBER
       matrix:
         setup:
           os:
