@@ -154,8 +154,6 @@ steps:
     steps:
       - name: ":docker: {{matrix}} image build"
         key: build-docker
-        agents:
-          queue: elastic-builders
         depends_on:
           - build-binary
           - set-metadata
