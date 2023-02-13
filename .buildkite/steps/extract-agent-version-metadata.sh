@@ -6,7 +6,7 @@ build_version=${BUILDKITE_BUILD_NUMBER:-1}
 full_agent_version="buildkite-agent version ${agent_version}, build ${build_version}"
 
 # docker variants
-registry="445615400570.dkr.ecr.us-east-1.amazonaws.com/agent"
+registry="253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent"
 docker_alpine_image_tag="$registry:alpine-build-${BUILDKITE_BUILD_NUMBER}"
 docker_alpine_k8s_image_tag="$registry:alpine-k8s-build-${BUILDKITE_BUILD_NUMBER}"
 docker_ubuntu_bionic_image_tag="$registry:ubuntu-18.04-build-${BUILDKITE_BUILD_NUMBER}"

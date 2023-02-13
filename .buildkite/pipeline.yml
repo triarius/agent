@@ -165,6 +165,7 @@ steps:
         plugins:
           - kubernetes:
               podSpec:
+                serviceAccount: ecr-push
                 nodeSelector:
                   kubernetes.io/arch: amd64
                 containers:
