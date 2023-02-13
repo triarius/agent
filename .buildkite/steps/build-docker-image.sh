@@ -15,7 +15,7 @@ set -Eeufo pipefail
 ## This requires packages that are typically named `qemu-user-static` and `qemu-user-static-binfmt`
 ## to be installed
 
-apk add docker-cli-buildx
+apk add docker-cli-buildx aws-cli
 
 variant="${1:-}"
 image_tag="${2:-}"
@@ -58,6 +58,10 @@ if [[ -z "$image_tag" ]] ; then
   echo "Docker Image Tag for $variant: $image_tag"
 fi
 
+echo "--- Logging into ECR"
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 253213882263.dkr.ecr.region.amazonaws.com
+
+echo "--- Building :docker: $image_tag"
 builder_name=$(docker buildx create \
   --driver remote \
   --driver-opt cacert=/buildkit/certs/ca.pem,cert=/buildkit/certs/cert.pem,key=/buildkit/certs/key.pem \
@@ -67,7 +71,6 @@ builder_name=$(docker buildx create \
 # shellcheck disable=SC2064 # we want the current $builder_name to be trapped, not the runtime one
 trap "docker buildx rm $builder_name || true" EXIT
 
-echo "--- Building :docker: $image_tag"
 cp -a packaging/linux/root/usr/share/buildkite-agent/hooks/ "${packaging_dir}/hooks/"
 cp pkg/buildkite-agent-linux-{amd64,arm64} "$packaging_dir"
 
