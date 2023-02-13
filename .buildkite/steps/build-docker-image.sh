@@ -15,6 +15,8 @@ set -Eeufo pipefail
 ## This requires packages that are typically named `qemu-user-static` and `qemu-user-static-binfmt`
 ## to be installed
 
+apk add docker-cli-buildx
+
 variant="${1:-}"
 image_tag="${2:-}"
 codename="${3:-}"
