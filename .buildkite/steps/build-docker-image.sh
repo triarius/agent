@@ -71,15 +71,6 @@ echo "--- Building :docker: $image_tag"
 cp -a packaging/linux/root/usr/share/buildkite-agent/hooks/ "${packaging_dir}/hooks/"
 cp pkg/buildkite-agent-linux-{amd64,arm64} "$packaging_dir"
 
-# Build images for all architectures
-docker buildx build --progress plain --builder "$builder_name" --platform linux/amd64,linux/arm64 "$packaging_dir"
-# Tag images for just the native architecture. There is a limitation in docker that prevents this
-# from being done in one command. Luckliy the second build will be quick because of docker layer caching
-docker buildx build --progress plain --builder "$builder_name" --tag "$image_tag" --load "$packaging_dir"
-
-# Sanity check test before pushing. Only works for current arch. CI will test all arches as well.
-.buildkite/steps/test-docker-image.sh "$variant" "$image_tag" "$(uname -m)"
-
 if [[ $push == "true" ]] ; then
   echo "--- Pushing to ECR :ecr:"
   # Do another build with all architectures. The layers should be cached from the previous build
