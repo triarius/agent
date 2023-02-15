@@ -59,7 +59,7 @@ if [[ -z "$image_tag" ]] ; then
 fi
 
 echo "--- Logging into ECR"
-aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 253213882263.dkr.ecr.region.amazonaws.com
+aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com
 
 echo "--- Building :docker: $image_tag"
 builder_name=$(docker buildx create \
