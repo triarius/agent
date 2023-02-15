@@ -38,8 +38,6 @@ packaging_dir="packaging/docker/$variant"
 rm -rf pkg
 mkdir -p pkg
 
-echo "--- Building"
-
 for arch in amd64 arm64 ; do
   if [[ -z "$version" ]] ; then
     echo '--- Downloading :linux: binaries from artifacts'
@@ -58,10 +56,13 @@ if [[ -z "$image_tag" ]] ; then
   echo "Docker Image Tag for $variant: $image_tag"
 fi
 
-echo "--- Logging into ECR"
-aws ecr get-login-password --region ap-southeast-2 | docker login --username AWS --password-stdin 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com
+echo "--- Logging into ECR :ECR:"
+aws ecr get-login-password --region ap-southeast-2 \
+  | docker login \
+    --username AWS \
+    --password-stdin \
+    253213882263.dkr.ecr.ap-southeast-2.amazonaws.com
 
-echo "--- Building :docker: $image_tag"
 builder_name=$(docker buildx create \
   --driver remote \
   --driver-opt cacert=/buildkit/certs/ca.pem,cert=/buildkit/certs/cert.pem,key=/buildkit/certs/key.pem \
@@ -75,7 +76,7 @@ cp -a packaging/linux/root/usr/share/buildkite-agent/hooks/ "${packaging_dir}/ho
 cp pkg/buildkite-agent-linux-{amd64,arm64} "$packaging_dir"
 
 if [[ $push == "true" ]] ; then
-  echo "--- Pushing to ECR :ecr:"
+  echo "--- Building and pushing to ECR :ecr:"
   # Do another build with all architectures. The layers should be cached from the previous build
   # with all architectures.
   # Pushing to the docker registry in this way greatly simplifies creating the manifest list on the
