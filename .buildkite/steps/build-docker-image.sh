@@ -76,7 +76,7 @@ cp -a packaging/linux/root/usr/share/buildkite-agent/hooks/ "${packaging_dir}/ho
 cp pkg/buildkite-agent-linux-{amd64,arm64} "$packaging_dir"
 
 if [[ $push == "true" ]] ; then
-  echo "--- Building and pushing to ECR :ecr:"
+  echo "--- Building and pushing $image_tag to ECR :ecr:"
   # Do another build with all architectures. The layers should be cached from the previous build
   # with all architectures.
   # Pushing to the docker registry in this way greatly simplifies creating the manifest list on the
