@@ -182,8 +182,36 @@ steps:
                       secretName: buildkit-client-certs
         matrix:
           setup:
-            - "alpine"
-            - "alpine-k8s"
-            - "ubuntu-18.04"
-            - "ubuntu-20.04"
-            - "sidecar"
+            - alpine
+            - alpine-k8s
+            - ubuntu-18.04
+            - ubuntu-20.04
+            - sidecar
+
+  # TODO: this used to much simpler because the image names to test were determined inside the job
+  # in the k8s stack, the image name needs to be known at pipeline upload time. This necessitated
+  # expanding the matrix
+  - group: ":docker: Docker Image Tests"
+    steps:
+      - name: ":docker: amd64 image test"
+        key: test-docker-amd64
+        agents:
+          queue: kubernetes
+        depends_on:
+          - build-docker
+        plugins:
+          - kubernetes:
+              podSpec:
+                nodeSelector:
+                  kubernetes.io/arch: amd64
+                containers:
+                  - name: test-image-can-run
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
+                    args:
+                      - --version
+                  - name: test-docker-compose
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
+                    entrypoint:
+                      - docker-compose
+                    args:
+                      - --version
