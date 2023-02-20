@@ -206,9 +206,63 @@ steps:
                 nodeSelector:
                   kubernetes.io/arch: amd64
                 containers:
-                  - name: test-image-can-run
+                  # alpine
+                  - name: test-alpine-agent-can-run
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
                     command: ["buildkite-agent", "--version"]
-                  - name: test-docker-compose
+                  - name: test-alpine-docker-compose
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
                     command: ["docker-compose", "--version"]
+                  - name: test-alpine-tini
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["tini", "--version"]
+                  - name: test-alpine-tini-old-path
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["/sbin/tini", "--version"]
+
+                  # alpine-k8s
+                  - name: test-alpine-k8s-agent-can-run
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-k8s-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["buildkite-agent", "--version"]
+                  - name: test-alpine-k8s-docker-compose
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-k8s-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["docker-compose", "--version"]
+                  - name: test-alpine-k8s-tini
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-k8s-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["tini", "--version"]
+                  - name: test-alpine-k8s-tini-old-path
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-k8s-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["/sbin/tini", "--version"]
+
+                  # ubuntu-18.04
+                  - name: test-ubuntu-18.04-agent-can-run
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["buildkite-agent", "--version"]
+                  - name: test-ubuntu-18.04-docker-compose
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["docker-compose", "--version"]
+                  - name: test-ubuntu-18.04-tini
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["tini", "--version"]
+                  - name: test-ubuntu-18.04-tini-old-path
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["/sbin/tini", "--version"]
+
+                  # ubuntu-20.04
+                  - name: test-ubuntu-20.04-agent-can-run
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["buildkite-agent", "--version"]
+                  - name: test-ubuntu-20.04-docker-compose
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["docker-compose", "--version"]
+                  - name: test-ubuntu-20.04-tini
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["tini", "--version"]
+                  - name: test-ubuntu-20.04-tini-old-path
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["/sbin/tini", "--version"]
+
+                  # sidecar
+                  - name: test-sidecar-agent-can-run
+                    image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:sidecar-build-$BUILDKITE_BUILD_NUMBER
+                    command: ["/buildkite/bin/buildkite-agent", "--version"]
