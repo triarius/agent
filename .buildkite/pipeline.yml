@@ -208,11 +208,7 @@ steps:
                 containers:
                   - name: test-image-can-run
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
-                    args:
-                      - --version
+                    command: ["buildkite-agent", "--version"]
                   - name: test-docker-compose
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:alpine-build-$BUILDKITE_BUILD_NUMBER
-                    entrypoint:
-                      - docker-compose
-                    args:
-                      - --version
+                    command: ["docker-compose", "--version"]
