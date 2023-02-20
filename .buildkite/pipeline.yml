@@ -235,30 +235,30 @@ steps:
                     command: ["/sbin/tini", "--version"]
 
                   # ubuntu-18.04
-                  - name: test-ubuntu-18.04-agent-can-run
+                  - name: test-ubuntu-18-04-agent-can-run
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["buildkite-agent", "--version"]
-                  - name: test-ubuntu-18.04-docker-compose
+                  - name: test-ubuntu-18-04-docker-compose
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["docker-compose", "--version"]
-                  - name: test-ubuntu-18.04-tini
+                  - name: test-ubuntu-18-04-tini
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["tini", "--version"]
-                  - name: test-ubuntu-18.04-tini-old-path
+                  - name: test-ubuntu-18-04-tini-old-path
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["/sbin/tini", "--version"]
 
                   # ubuntu-20.04
-                  - name: test-ubuntu-20.04-agent-can-run
+                  - name: test-ubuntu-20-04-agent-can-run
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["buildkite-agent", "--version"]
-                  - name: test-ubuntu-20.04-docker-compose
+                  - name: test-ubuntu-20-04-docker-compose
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["docker-compose", "--version"]
-                  - name: test-ubuntu-20.04-tini
+                  - name: test-ubuntu-20-04-tini
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["tini", "--version"]
-                  - name: test-ubuntu-20.04-tini-old-path
+                  - name: test-ubuntu-20-04-tini-old-path
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["/sbin/tini", "--version"]
 
@@ -309,30 +309,30 @@ steps:
                     command: ["/sbin/tini", "--version"]
 
                   # ubuntu-18.04
-                  - name: test-ubuntu-18.04-agent-can-run
+                  - name: test-ubuntu-18-04-agent-can-run
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["buildkite-agent", "--version"]
-                  - name: test-ubuntu-18.04-docker-compose
+                  - name: test-ubuntu-18-04-docker-compose
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["docker-compose", "--version"]
-                  - name: test-ubuntu-18.04-tini
+                  - name: test-ubuntu-18-04-tini
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["tini", "--version"]
-                  - name: test-ubuntu-18.04-tini-old-path
+                  - name: test-ubuntu-18-04-tini-old-path
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-18.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["/sbin/tini", "--version"]
 
                   # ubuntu-20.04
-                  - name: test-ubuntu-20.04-agent-can-run
+                  - name: test-ubuntu-20-04-agent-can-run
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["buildkite-agent", "--version"]
-                  - name: test-ubuntu-20.04-docker-compose
+                  - name: test-ubuntu-20-04-docker-compose
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["docker-compose", "--version"]
-                  - name: test-ubuntu-20.04-tini
+                  - name: test-ubuntu-20-04-tini
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["tini", "--version"]
-                  - name: test-ubuntu-20.04-tini-old-path
+                  - name: test-ubuntu-20-04-tini-old-path
                     image: 253213882263.dkr.ecr.ap-southeast-2.amazonaws.com/agent:ubuntu-20.04-build-$BUILDKITE_BUILD_NUMBER
                     command: ["/sbin/tini", "--version"]
 
