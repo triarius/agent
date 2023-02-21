@@ -15,8 +15,9 @@ steps:
               kubernetes.io/arch: arm64
             containers:
               - image: alpine:latest
-                command:
-                  - echo hello world
+                command: [echo]
+                args:
+                - "Hello, world!"
 
   - name: ":go: go fmt"
     key: test-go-fmt
