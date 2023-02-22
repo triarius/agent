@@ -7,7 +7,7 @@ agents:
   queue: kubernetes
 
 steps:
-  - name: "hello world"
+  - name: ":wave::world_map: Hello World!"
     plugins:
       - kubernetes:
           podSpec:
