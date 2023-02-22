@@ -31,32 +31,25 @@ steps:
                 command:
                   - .buildkite/steps/test-go-fmt.sh
 
-  - name: ":linux: Linux AMD64 Tests"
-    key: test-linux-amd64
-    artifact_paths: junit-*.xml
-    plugins:
-      - kubernetes:
-          podSpec:
-            nodeSelector:
-              kubernetes.io/arch: amd64
-            containers:
-              - image: golang:1.20-alpine
-                command:
-                  - .buildkite/steps/tests.sh
-
-  - name: ":linux: Linux ARM64 Tests"
-    key: test-linux-arm64
-    command: ".buildkite/steps/tests.sh"
-    artifact_paths: junit-*.xml
-    plugins:
-      - kubernetes:
-          podSpec:
-            nodeSelector:
-              kubernetes.io/arch: arm64
-            containers:
-              - image: golang:1.20-alpine
-                command:
-                  - .buildkite/steps/tests.sh
+  - group: ":golang::linux: Linux Tests"
+    steps:
+      - name: ":linux: Linux {{matrix.arch}} Tests"
+        key: test-linux
+        artifact_paths: junit-*.xml
+        plugins:
+          - kubernetes:
+              podSpec:
+                nodeSelector:
+                  kubernetes.io/arch: "{{matrix.arch}}"
+                containers:
+                  - image: golang:1.20-alpine
+                    command:
+                      - .buildkite/steps/tests.sh
+        matrix:
+          setup:
+            arch:
+              - amd64
+              - arm64
 
   - name: ":satellite: Detect Data Races"
     key: test-race-linux
@@ -75,9 +68,8 @@ steps:
 #
 #   - label: ":writing_hand: Annotate with Test Failures"
 #     depends_on:
-#       - test-linux-amd64
+#       - test-linux
 #       - test-race-linux
-#       - test-linux-arm64
 #     plugins:
 #       - kubernetes:
 #           podSpec:
@@ -94,8 +86,7 @@ steps:
       key: build-binary
       depends_on:
         # don't wait for slower windows tests
-        - test-linux-amd64
-        - test-linux-arm64
+        - test-linux
       artifact_paths: "pkg/*"
       plugins:
         - kubernetes:
