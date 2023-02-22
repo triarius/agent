@@ -186,7 +186,7 @@ steps:
 
   - group: ":docker: Docker Image Tests"
     steps:
-      - name: ":docker: {{matrix.arch}} image test"
+      - name: ":docker: {{matrix.arch}} {{matrix.variant}} image test"
         key: test-docker
         agents:
           queue: kubernetes
@@ -223,7 +223,7 @@ steps:
                     command: ["/sbin/tini", "--version"]
 
       # sidecar tests are special
-      - name: ":docker: {{matrix.arch}} image test"
+      - name: ":docker: {{matrix.arch}} sidecar image test"
         key: test-docker-amd64
         agents:
           queue: kubernetes
