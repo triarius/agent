@@ -96,9 +96,6 @@ steps:
         # don't wait for slower windows tests
         - test-linux-amd64
         - test-linux-arm64
-      env:
-        GOOS: "{{matrix.os}}"
-        GOARCH: "{{matrix.arch}}"
       artifact_paths: "pkg/*"
       plugins:
         - kubernetes:
@@ -108,7 +105,7 @@ steps:
               containers:
                 - image: golang:1.20
                   command:
-                    - .buildkite/steps/build-binary.sh "\$GOOS" "\$GOARCH"
+                    - .buildkite/steps/build-binary.sh "{{matrix.os}}" "{{matrix.arch}}"
       matrix:
         setup:
           os:
@@ -161,8 +158,6 @@ steps:
         depends_on:
           - build-binary
           - set-metadata
-        env:
-          IMAGE_VARIANT: "{{matrix}}"
         plugins:
           - kubernetes:
               podSpec:
@@ -173,7 +168,7 @@ steps:
                   - name: builder
                     image: *agent-image
                     command:
-                      - .buildkite/steps/build-docker-image.sh "\$IMAGE_VARIANT"
+                      - .buildkite/steps/build-docker-image.sh "{{matrix}}"
                     volumeMounts:
                       - name: buildkit-client
                         mountPath: /buildkit/certs
