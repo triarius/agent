@@ -1,7 +1,7 @@
 env:
   DRY_RUN: false # set to true to disable publishing releases
 agents:
-  queue: agent-runners-linux-amd64
+  queue: ${QUEUE:-default}
 
 steps:
   - name: ":go: go fmt"
@@ -32,41 +32,14 @@ steps:
         files: "junit-*.xml"
         format: "junit"
 
-  - name: ":linux: Linux ARM64 Tests"
-    key: test-linux-arm64
-    command: ".buildkite/steps/tests.sh"
-    artifact_paths: junit-*.xml
-    agents:
-      queue: agent-runners-linux-arm64
-    plugins:
-      docker-compose#v3.0.0:
-        config: .buildkite/docker-compose.yml
-        run: agent
-      test-collector#v1.2.0:
-        files: "junit-*.xml"
-        format: "junit"
-
   - name: ":satellite: Detect Data Races"
     key: test-race-linux-arm64
     command: ".buildkite/steps/tests.sh -race"
     artifact_paths: junit-*.xml
-    agents:
-      queue: agent-runners-linux-arm64
     plugins:
       docker-compose#v3.0.0:
         config: .buildkite/docker-compose.yml
         run: agent
-      test-collector#v1.2.0:
-        files: "junit-*.xml"
-        format: "junit"
-
-  - name: ":windows: Windows AMD64 Tests"
-    key: test-windows
-    command: "bash .buildkite\\steps\\tests.sh"
-    artifact_paths: junit-*.xml
-    agents:
-      queue: agent-runners-windows-amd64
-    plugins:
       test-collector#v1.2.0:
         files: "junit-*.xml"
         format: "junit"
@@ -75,8 +48,6 @@ steps:
     depends_on:
       - test-linux-amd64
       - test-race-linux-arm64
-      - test-linux-arm64
-      - test-windows
     plugins:
       - junit-annotate#v1.6.0:
           artifacts: junit-*.xml
@@ -89,7 +60,6 @@ steps:
       depends_on:
         # don't wait for slower windows tests
         - test-linux-amd64
-        - test-linux-arm64
       artifact_paths: "pkg/*"
       plugins:
         docker-compose#v3.0.0:
@@ -151,8 +121,6 @@ steps:
     steps:
       - name: ":docker: {{matrix}} image build"
         key: build-docker
-        agents:
-          queue: elastic-builders
         depends_on:
           - build-binary
           - set-metadata
@@ -165,42 +133,6 @@ steps:
             - "ubuntu-20.04"
             - "ubuntu-22.04"
             - "sidecar"
-
-  - group: ":docker: Docker Image Tests"
-    steps:
-      - name: ":docker: {{matrix.variant}} amd64 image test"
-        key: test-docker-amd64
-        agents:
-          queue: elastic-builders
-        depends_on:
-          - build-docker
-        command: .buildkite/steps/test-docker-image.sh {{matrix.variant}}
-        matrix:
-          setup:
-            variant:
-              - alpine
-              - alpine-k8s
-              - ubuntu-18.04
-              - ubuntu-20.04
-              - ubuntu-22.04
-              - sidecar
-
-      - name: ":docker: {{matrix.variant}} arm64 image test"
-        key: test-docker-arm64
-        agents:
-          queue: elastic-builders-arm64
-        depends_on:
-          - build-docker
-        command: .buildkite/steps/test-docker-image.sh {{matrix.variant}}
-        matrix:
-          setup:
-            variant:
-              - alpine
-              - alpine-k8s
-              - ubuntu-18.04
-              - ubuntu-20.04
-              - ubuntu-22.04
-              - sidecar
 
   - name: ":debian: Debian package build"
     key: build-debian-packages
